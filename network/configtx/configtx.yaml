@@ -1,0 +1,341 @@
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: ../organizations/ordererOrganizations/mednet.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+        OrdererEndpoints:
+            - orderer.mednet.com:7050
+
+    - &hospital
+        Name: hospitalMSP
+
+        ID: hospitalMSP
+
+        MSPDir: ../organizations/peerOrganizations/hospital.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin', 'hospitalMSP.peer', 'hospitalMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin', 'hospitalMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('hospitalMSP.peer')"
+
+    - &citizen
+
+        Name: citizenMSP
+
+        ID: citizenMSP
+
+        MSPDir: ../organizations/peerOrganizations/citizen.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin', 'citizenMSP.peer', 'citizenMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin', 'citizenMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('citizenMSP.peer')"
+
+    - &doctor
+
+        Name: doctorMSP
+
+        ID: doctorMSP
+
+        MSPDir: ../organizations/peerOrganizations/doctor.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin', 'doctorMSP.peer', 'doctorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin', 'doctorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('doctorMSP.peer')"
+
+    - &insurer
+
+        Name: insurerMSP
+
+        ID: insurerMSP
+
+        MSPDir: ../organizations/peerOrganizations/insurer.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin', 'insurerMSP.peer', 'insurerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin', 'insurerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('insurerMSP.peer')"
+    
+    - &pathlab
+
+        Name: pathlabMSP
+
+        ID: pathlabMSP
+
+        MSPDir: ../organizations/peerOrganizations/pathlab.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin', 'pathlabMSP.peer', 'pathlabMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin', 'pathlabMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('pathlabMSP.peer')"
+
+    - &manufacturer
+
+        Name: manufacturerMSP
+
+        ID: manufacturerMSP
+
+        MSPDir: ../organizations/peerOrganizations/manufacturer.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin', 'manufacturerMSP.peer', 'manufacturerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin', 'manufacturerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.peer')"
+
+    - &transporter
+
+        Name: transporterMSP
+
+        ID: transporterMSP
+
+        MSPDir: ../organizations/peerOrganizations/transporter.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin', 'transporterMSP.peer', 'transporterMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin', 'transporterMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('transporterMSP.peer')"
+
+    - &pharmacy
+
+        Name: pharmacyMSP
+
+        ID: pharmacyMSP
+
+        MSPDir: ../organizations/peerOrganizations/pharmacy.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin', 'pharmacyMSP.peer', 'pharmacyMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin', 'pharmacyMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.peer')"
+
+Capabilities:
+ 
+    Channel: &ChannelCapabilities
+        V2_0: true
+
+    Orderer: &OrdererCapabilities
+        V2_0: true
+
+    Application: &ApplicationCapabilities
+        V2_0: true
+
+Application: &ApplicationDefaults
+
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer.mednet.com:7050
+
+    EtcdRaft:
+        Consenters:
+            -   Host: orderer.mednet.com
+                Port: 7050
+                ClientTLSCert: ../organizations/ordererOrganizations/mednet.com/orderers/orderer.mednet.com/tls/server.crt
+                ServerTLSCert: ../organizations/ordererOrganizations/mednet.com/orderers/orderer.mednet.com/tls/server.crt
+
+    BatchTimeout: 2s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+
+        AbsoluteMaxBytes: 99 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+ 
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+
+Channel: &ChannelDefaults
+
+    Policies:
+
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+
+    Capabilities:
+        <<: *ChannelCapabilities
+
+
+Profiles:
+
+    MednetOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities: *OrdererCapabilities
+
+        Consortiums: 
+            MednetConsortium: 
+                Organizations:
+                    - *hospital
+                    - *citizen
+                    - *doctor
+                    - *insurer
+                    - *pathlab
+                    - *manufacturer
+                    - *transporter
+                    - *pharmacy
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *hospital
+                - *citizen
+                - *doctor
+                - *insurer
+                - *pathlab
+                - *manufacturer
+                - *transporter
+                - *pharmacy
+            Capabilities: *ApplicationCapabilities
+
+
+    MednetChannel:
+        Consortium: MednetConsortium
+        <<: *ChannelDefaults
+
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *hospital
+                - *citizen
+                - *doctor
+                - *insurer
+                - *pathlab
+                - *manufacturer
+                - *transporter
+                - *pharmacy
+            Capabilities: *ApplicationCapabilities

@@ -1,0 +1,153 @@
+version: '2.1'
+
+networks:
+  mednet:
+    name: network_mednet
+
+services:
+  ca_hospital:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=hospitalCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8051
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8052
+    # volumes: 
+    #  - ../organizations/fabric-ca:/etc/hyperledger/fabric-ca-server
+    ports: 
+      - "8051:8051"
+      - "8052:8052"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_hospital
+    networks:
+      - mednet
+  
+  ca_citizen:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=citizenCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8055
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8056
+    ports: 
+      - "8055:8055"
+      - "8056:8056"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_citizen
+    networks:
+      - mednet
+
+  ca_doctor:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=doctorCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8059
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8060
+    ports: 
+      - "8059:8059"
+      - "8060:8060"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_doctor
+    networks:
+      - mednet
+
+  ca_insurer:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=insurerCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8063
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8064
+    ports: 
+      - "8063:8063"
+      - "8064:8064"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_insurer
+    networks:
+      - mednet
+
+  ca_pathlab:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=pathlabCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8067
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8068
+    ports: 
+      - "8067:8067"
+      - "8068:8068"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_pathlab
+    networks:
+      - mednet
+
+  ca_manufacturer:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=manufacturerCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8071
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8072
+    ports: 
+      - "8071:8071"
+      - "8072:8072"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_manufacturer
+    networks:
+      - mednet
+
+  ca_transporter:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=transporterCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8075
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8076
+    ports: 
+      - "8075:8075"
+      - "8076:8076"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_transporter
+    networks:
+      - mednet
+
+  ca_pharmacy:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=pharmacyCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=8079
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:8080
+    ports: 
+      - "8079:8079"
+      - "8080:8080"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_pharmacy
+    networks:
+      - mednet
+
+
+  ca_orderer:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ordererCA
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_PORT=9000
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:9001
+    ports: 
+      - "9000:9000"
+      - "9001:9001"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: ca_orderer
+    networks:
+      - mednet

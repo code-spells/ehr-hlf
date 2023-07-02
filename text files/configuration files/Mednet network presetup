@@ -1,0 +1,537 @@
+Step 1: Install Hyperledger Fabric
+
+$
+mkdir medical-supplychain
+cd medical-supplychain
+curl -sSL https://bit.ly/2ysbOFE | bash -s
+====================================================================
+
+Step 2: Setup Development Environment
+
+=> Open project folder in Webstorm or Visual Studio or any other IDE
+=> Copy bin and config folder from fabric-samples to project root.
+=================================================================
+
+step 3:
+
+=> Create network folder and inside of that create organizations folder and then cryptogen folder
+$
+mkdir network
+cd network
+mkdir organizations
+cd organizations
+mkdir cryptogen
+cd cryptogen
+===================================================================
+step 4: 
+
+=> Create 8 crypto-config files as given below
+@===========================================
+=>crypto-config-orderer.yaml
+---
+OrdererOrgs:
+  - Name: Orderer
+    Domain: mednet.com
+    EnableNodeOUs: true
+    Specs: 
+      - Hostname: orderer
+        SANS: 
+          - localhost 
+@==================================
+=>crypto-config-hospital.yaml
+---
+PeerOrgs:
+  - Name: hospital
+    Domain: hospital.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-citizen.yaml
+---
+PeerOrgs:
+  - Name: citizen
+    Domain: citizen.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-doctor.yaml
+---
+PeerOrgs:
+  - Name: doctor
+    Domain: doctor.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:export IMAGE_TAG=latest
+docker-compose -f docker/docker-compose-mednet.yaml -f docker/docker-compose-ca.yaml up -d
+      Count: 1
+@==================================
+=>crypto-config-insurer.yaml
+---
+PeerOrgs:
+  - Name: insurer
+    Domain: insurer.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-pathlab.yaml
+---
+PeerOrgs:
+  - Name: pathlab
+    Domain: pathlab.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-manufacturer.yaml
+---
+PeerOrgs:
+  - Name: manufacturer
+    Domain: manufacturer.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-transporter.yaml
+---
+PeerOrgs:
+  - Name: transporter
+    Domain: transporter.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+@==================================
+=>crypto-config-pharmacy.yaml
+---
+PeerOrgs:
+  - Name: pharmacy
+    Domain: pharmacy.mednet.com
+    EnableNodeOUs: true
+    Template: 
+      Count: 2
+      SANS: 
+        - localhost
+    Users:
+      Count: 1
+============================================================
+step 5: go to terminal, back in the network folder and run the below commands to generate crypto materials
+
+$
+export PATH=${PWD}/../bin:$PATH
+cryptogen generate --config=./organizations/cryptogen/crypto-config-orderer.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-hospital.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-citizen.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-doctor.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-insurer.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-pathlab.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-manufacturer.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-transporter.yaml --output="organizations"
+cryptogen generate --config=./organizations/cryptogen/crypto-config-pharmacy.yaml --output="organizations"
+===========================================================================================
+
+step 6: Generate Genesis Block Artifact
+
+=>Create configtx folder and then inside of that the configtx.yaml file
+@=============================================
+=>configtx.yaml
+---
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: ../organizations/ordererOrganizations/mednet.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('OrdererMSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('OrdererMSP.admin')"
+
+        OrdererEndpoints:
+            - orderer.mednet.com:7050
+
+    - &hospital
+        Name: hospitalMSP
+
+        ID: hospitalMSP
+
+        MSPDir: ../organizations/peerOrganizations/hospital.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin', 'hospitalMSP.peer', 'hospitalMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin', 'hospitalMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('hospitalMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('hospitalMSP.peer')"
+
+    - &citizen
+
+        Name: citizenMSP
+
+        ID: citizenMSP
+
+        MSPDir: ../organizations/peerOrganizations/citizen.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin', 'citizenMSP.peer', 'citizenMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin', 'citizenMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('citizenMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('citizenMSP.peer')"
+
+    - &doctor
+
+        Name: doctorMSP
+
+        ID: doctorMSP
+
+        MSPDir: ../organizations/peerOrganizations/doctor.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin', 'doctorMSP.peer', 'doctorMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin', 'doctorMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('doctorMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('doctorMSP.peer')"
+
+    - &insurer
+
+        Name: insurerMSP
+
+        ID: insurerMSP
+
+        MSPDir: ../organizations/peerOrganizations/insurer.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin', 'insurerMSP.peer', 'insurerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin', 'insurerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('insurerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('insurerMSP.peer')"
+    
+    - &pathlab
+
+        Name: pathlabMSP
+
+        ID: pathlabMSP
+
+        MSPDir: ../organizations/peerOrganizations/pathlab.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin', 'pathlabMSP.peer', 'pathlabMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin', 'pathlabMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('pathlabMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('pathlabMSP.peer')"
+
+    - &manufacturer
+
+        Name: manufacturerMSP
+
+        ID: manufacturerMSP
+
+        MSPDir: ../organizations/peerOrganizations/manufacturer.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin', 'manufacturerMSP.peer', 'manufacturerMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin', 'manufacturerMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('manufacturerMSP.peer')"
+
+    - &transporter
+
+        Name: transporterMSP
+
+        ID: transporterMSP
+
+        MSPDir: ../organizations/peerOrganizations/transporter.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin', 'transporterMSP.peer', 'transporterMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin', 'transporterMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('transporterMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('transporterMSP.peer')"
+
+    - &pharmacy
+
+        Name: pharmacyMSP
+
+        ID: pharmacyMSP
+
+        MSPDir: ../organizations/peerOrganizations/pharmacy.mednet.com/msp
+
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin', 'pharmacyMSP.peer', 'pharmacyMSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin', 'pharmacyMSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('pharmacyMSP.peer')"
+
+Capabilities:
+ 
+    Channel: &ChannelCapabilities
+        V2_0: true
+
+    Orderer: &OrdererCapabilities
+        V2_0: true
+
+    Application: &ApplicationCapabilities
+        V2_5: true
+
+Application: &ApplicationDefaults
+
+    Organizations:
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+
+Orderer: &OrdererDefaults
+    OrdererType: etcdraft
+    Addresses:
+        - orderer.mednet.com:7050
+
+    EtcdRaft:
+        Consenters:
+        - Host: orderer.mednet.com
+          Port: 7050
+          ClientTLSCert: ../organizations/ordererOrganizations/mednet.com/orderers/orderer.mednet.com/tls/server.crt
+          ServerTLSCert: ../organizations/ordererOrganizations/mednet.com/orderers/orderer.mednet.com/tls/server.crt
+
+    BatchTimeout: 2s
+
+    BatchSize:
+
+        MaxMessageCount: 10
+
+        AbsoluteMaxBytes: 99 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+ 
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+
+Channel: &ChannelDefaults
+
+    Policies:
+
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+
+    Capabilities:
+        <<: *ChannelCapabilities
+
+
+Profiles:
+
+    MednetOrdererGenesis:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities: *OrdererCapabilities
+
+        Consortiums:
+            MednetConsortium:
+                Organizations:
+                    - *hospital
+                    - *citizen
+                    - *doctor
+                    - *insurer
+                    - *pathlab
+                    - *manufacturer
+                    - *transporter
+                    - *pharmacy
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *hospital
+                - *citizen
+                - *doctor
+                - *insurer
+                - *pathlab
+                - *manufacturer
+                - *transporter
+                - *pharmacy
+            Capabilities: *ApplicationCapabilities
+
+
+    MednetChannel:
+        Consortiums:
+            MednetConsortium:
+                Organizations:
+                    - *hospital
+                    - *citizen
+                    - *doctor
+                    - *insurer
+                    - *pathlab
+                    - *manufacturer
+                    - *transporter
+                    - *pharmacy
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *hospital
+                - *citizen
+                - *doctor
+                - *insurer
+                - *pathlab
+                - *manufacturer
+                - *transporter
+                - *pharmacy
+            Capabilities: *ApplicationCapabilities
+============================================================
+
+step 7: 
+=>Add configtx file path to environment
+=>Run configtxgen tool to create artifact file
+$
+export FABRIC_CFG_PATH=${PWD}/configtx
+configtxgen -profile MednetOrdererGenesis -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
+==============================================================
+
+
+
+
+
+
+
+
+
+
+
+

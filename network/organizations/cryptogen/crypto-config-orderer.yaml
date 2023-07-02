@@ -1,0 +1,11 @@
+---
+OrdererOrgs:
+  - Name: Orderer
+    Domain: mednet.com
+    EnableNodeOUs: true
+    Specs: 
+      - Hostname: orderer
+        SANS: 
+          - localhost
+    CA:
+      OrganizationalUnit: admin
