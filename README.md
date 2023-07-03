@@ -11,5 +11,5 @@ share with the parties involved in the treatment or to provide the medicines for
 The problem that we face in having a centralised server for storing the medical records is that the patients does not have the control over their data, there's a
 chance of having data being misused, the difficulty in interoperability between different hospitals and other health institutions and the time taken for the
 insurance claim, drug counterfeiting and the malfunctioning with the prescription drugs. Using a private blockchain with proper access control policies provides 
-the solution for the prolems mentioned here.
+the solution for the problems mentioned here.
  
